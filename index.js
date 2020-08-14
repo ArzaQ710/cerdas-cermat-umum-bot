@@ -66,7 +66,10 @@ const sendQuestion = (ctx) => {
       .then((question) => {
         ctx.replyWithMarkdown(
           `${question.question.question}\nA: ${answersForCurrentQuestion[0].answer}\nB: ${answersForCurrentQuestion[1].answer}\nC: ${answersForCurrentQuestion[2].answer}\nD: ${answersForCurrentQuestion[3].answer}`,
-          Markup.keyboard([["A", "B"], ["C", "D"], ,])
+          Markup.keyboard([
+            ["A", "B"],
+            ["C", "D"],
+          ])
             .oneTime()
             .resize()
             .extra()
