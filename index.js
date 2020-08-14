@@ -48,7 +48,10 @@ const getRandomQuestion = () => {
 
         resolve(responseJson);
       })
-      .catch(reject);
+      .catch((err) => {
+        console.log("Failed to get random random question"), err;
+        reject(err);
+      });
   });
 };
 
@@ -75,7 +78,10 @@ const sendQuestion = (ctx) => {
 
         resolve(true);
       })
-      .catch(reject);
+      .catch((err) => {
+        reject(err);
+        console.log("Failed to send question", err);
+      });
   });
 };
 
