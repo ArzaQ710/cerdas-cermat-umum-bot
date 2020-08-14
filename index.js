@@ -100,6 +100,8 @@ const giveScore = (uid, player_name, ctx) => {
       giveScoreLocked = false;
       gamestart = true;
 
+      console.log(`${player_name} got the point`);
+
       ctx.reply(`${player_name} got the point`);
       // ctx.reply("Here we go again");
 
@@ -179,13 +181,11 @@ const startGame = (ctx) => {
 ccu_tbot.command("start", (ctx) => {
   ctx.reply("Ok. I'm listening");
 });
-
 ccu_tbot.command("startgame", (ctx) => {
   gamestart = true;
   ctx.reply("Lets rock");
   startGame(ctx);
 });
-
 ccu_tbot.command("help", (ctx) => ctx.reply("What can i help?"));
 
 ccu_tbot.hears(/A|B|C|D/g, (ctx) => {
