@@ -205,7 +205,7 @@ ccu_tbot.command("start", (ctx) => {
   ctx.reply("Ok. I'm listening");
 });
 ccu_tbot.command("startgame", (ctx) => {
-  ctx.scene.enter("gameStartScene");
+  ctx.scene.enter("GAME_START_SCENE");
 });
 ccu_tbot.command("help", (ctx) => ctx.reply("What can i help?"));
 
