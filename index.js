@@ -58,7 +58,7 @@ const getRandomQuestion = () => {
  * @returns Promise
  */
 const sendQuestion = (ctx) => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     getRandomQuestion()
       .then((question) => {
         ctx.replyWithMarkdown(
@@ -76,7 +76,7 @@ const sendQuestion = (ctx) => {
       .catch((err) => console.log(err));
 
     resolve(true);
-  }).catch(() => resolve("Failed to send question"));
+  }).catch(() => reject("Failed to send question"));
 };
 
 /**
