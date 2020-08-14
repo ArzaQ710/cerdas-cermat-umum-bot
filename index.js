@@ -101,7 +101,7 @@ const giveScore = (uid, player_name, ctx) => {
       gamestart = true;
 
       ctx.reply(`${player_name} got the point`);
-      ctx.reply("Here we go again");
+      // ctx.reply("Here we go again");
 
       startGame(ctx);
     })
@@ -165,9 +165,12 @@ const startGame = (ctx) => {
       })
       .catch((err) => console.log(err));
   } else {
+    clearTimeout(nextQuestionTimeout);
+
     nocorrectanswer = 0;
+
     ctx.reply(
-      "I think it's enough. Looks like one answers correctly for five times in a row"
+      "I think it's enough. Looks like no one answers correctly for five times in a row"
     );
     console.log("Game stopped");
   }
