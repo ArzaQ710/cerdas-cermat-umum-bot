@@ -32,6 +32,14 @@ gameStartScene.hears(/A|B|C|D/g, (ctx) => {
   checkAnswer(ctx, ctx.message.text);
 });
 
+ccu_tbot.command("start", (ctx) => {
+  ctx.reply("Ok. I'm listening");
+});
+ccu_tbot.command("startgame", (ctx) => {
+  ctx.scene.enter("GAME_START_SCENE");
+});
+ccu_tbot.command("help", (ctx) => ctx.reply("What can i help?"));
+
 /**
  * @param array answers
  *
@@ -205,18 +213,5 @@ const startGame = (ctx) => {
     console.log("Game stopped");
   }
 };
-
-ccu_tbot.command("start", (ctx) => {
-  ctx.reply("Ok. I'm listening");
-});
-ccu_tbot.command("startgame", (ctx) => {
-  ctx.scene.enter("GAME_START_SCENE");
-});
-ccu_tbot.command("help", (ctx) => ctx.reply("What can i help?"));
-
-// ccu_tbot.hears(/A|B|C|D/g, (ctx) => {
-//   console.log("Response: ", ctx.message.text);
-//   checkAnswer(ctx, ctx.message.text);
-// });
 
 module.exports = ccu_tbot;
