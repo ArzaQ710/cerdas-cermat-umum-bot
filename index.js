@@ -48,7 +48,7 @@ const getRandomQuestion = () => {
 
         resolve(responseJson);
       })
-      .catch((err) => reject(err));
+      .catch(reject);
   });
 };
 
@@ -59,22 +59,24 @@ const getRandomQuestion = () => {
  */
 const sendQuestion = (ctx) => {
   return new Promise((resolve) => {
-    getRandomQuestion().then((question) => {
-      ctx.replyWithMarkdown(
-        `${question.question.question}\nA: ${answersForCurrentQuestion[0].answer}\nB: ${answersForCurrentQuestion[1].answer}\nC: ${answersForCurrentQuestion[2].answer}\nD: ${answersForCurrentQuestion[3].answer}`,
-        Markup.keyboard([["A", "B"], ["C", "D"], ,])
-          .oneTime()
-          .resize()
-          .extra()
-      );
+    getRandomQuestion()
+      .then((question) => {
+        ctx.replyWithMarkdown(
+          `${question.question.question}\nA: ${answersForCurrentQuestion[0].answer}\nB: ${answersForCurrentQuestion[1].answer}\nC: ${answersForCurrentQuestion[2].answer}\nD: ${answersForCurrentQuestion[3].answer}`,
+          Markup.keyboard([["A", "B"], ["C", "D"], ,])
+            .oneTime()
+            .resize()
+            .extra()
+        );
 
-      // ctx.reply(question.question.question);
-      console.log(question.question.question);
-      nocorrectanswer++;
-    });
+        // ctx.reply(question.question.question);
+        console.log(question.question.question);
+        nocorrectanswer++;
+      })
+      .catch((err) => console.log(err));
 
     resolve(true);
-  });
+  }).catch(() => resolve("Failed to send question"));
 };
 
 /**
@@ -145,11 +147,13 @@ const startGame = (ctx) => {
   }
 
   if (gamestart) {
-    sendQuestion(ctx).then(() => {
-      nextQuestionTimeout = setTimeout(() => {
-        startGame(ctx);
-      }, 1000 * nextQuestionDelay);
-    });
+    sendQuestion(ctx)
+      .then(() => {
+        nextQuestionTimeout = setTimeout(() => {
+          startGame(ctx);
+        }, 1000 * nextQuestionDelay);
+      })
+      .catch((err) => console.log(err));
   } else {
     nocorrectanswer = 0;
   }
