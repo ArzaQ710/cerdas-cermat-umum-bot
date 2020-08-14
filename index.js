@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 
 const ccu_tbot = new Composer();
 
-const nextQuestionDelay = 5;
+const nextQuestionDelay = 10;
 let gamestart = false;
 let nocorrectanswer = 0;
 let answersForCurrentQuestion = {};
@@ -160,7 +160,7 @@ const startGame = (ctx) => {
       .then(() => {
         nextQuestionTimeout = setTimeout(() => {
           startGame(ctx);
-        }, 5000);
+        }, 1000 * nextQuestionDelay);
       })
       .catch((err) => console.log(err));
   } else {
