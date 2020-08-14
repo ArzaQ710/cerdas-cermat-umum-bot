@@ -1,7 +1,15 @@
-const { Composer, Markup, Context } = require("micro-bot");
+const { Composer, Markup, Stage, Scene, session } = require("micro-bot");
 const fetch = require("node-fetch");
 
 const ccu_tbot = new Composer();
+
+const gameStartScene = new Scene("GAME_START_SCENE");
+
+const stage = new Stage();
+stage.register(gameStartScene);
+
+ccu_tbot.use(session());
+ccu_tbot.use(stage);
 
 const nextQuestionDelay = 5;
 let gamestart = false;
@@ -9,6 +17,21 @@ let nocorrectanswer = 0;
 let answersForCurrentQuestion = {};
 let giveScoreLocked = false;
 let nextQuestionTimeout = 0;
+
+gameStartScene.enter((ctx) => {
+  gamestart = true;
+  ctx.reply("Lets rock");
+  startGame(ctx);
+});
+gameStartScene.leave((ctx) => {
+  ctx.reply(
+    "I think it's enough. Looks like no one answers correctly for five times in a row"
+  );
+});
+gameStartScene.hears(/A|B|C|D/g, (ctx) => {
+  console.log("Response: ", ctx.message.text);
+  checkAnswer(ctx, ctx.message.text);
+});
 
 /**
  * @param array answers
@@ -135,14 +158,15 @@ const checkAnswer = (ctx, answer) => {
       break;
   }
 
-  if (Boolean(answersForCurrentQuestion[answerIndex].correct)) {
+  if (
+    Boolean(answersForCurrentQuestion[answerIndex].correct) &&
+    !giveScoreLocked
+  ) {
     const uid = ctx.from.id;
     const player_name = `${ctx.from.first_name} ${ctx.from.last_name}`;
 
-    if (!giveScoreLocked) {
-      clearTimeout(nextQuestionTimeout);
-      giveScore(uid, player_name, ctx);
-    }
+    clearTimeout(nextQuestionTimeout);
+    giveScore(uid, player_name, ctx);
   }
 };
 
@@ -171,9 +195,8 @@ const startGame = (ctx) => {
 
     nocorrectanswer = 0;
 
-    ctx.reply(
-      "I think it's enough. Looks like no one answers correctly for five times in a row"
-    );
+    ctx.scene.leave();
+
     console.log("Game stopped");
   }
 };
@@ -182,14 +205,13 @@ ccu_tbot.command("start", (ctx) => {
   ctx.reply("Ok. I'm listening");
 });
 ccu_tbot.command("startgame", (ctx) => {
-  gamestart = true;
-  ctx.reply("Lets rock");
-  startGame(ctx);
+  ctx.scene.enter("gameStartScene");
 });
 ccu_tbot.command("help", (ctx) => ctx.reply("What can i help?"));
 
-ccu_tbot.hears(/A|B|C|D/g, (ctx) => {
-  checkAnswer(ctx, ctx.message.text);
-});
+// ccu_tbot.hears(/A|B|C|D/g, (ctx) => {
+//   console.log("Response: ", ctx.message.text);
+//   checkAnswer(ctx, ctx.message.text);
+// });
 
 module.exports = ccu_tbot;
