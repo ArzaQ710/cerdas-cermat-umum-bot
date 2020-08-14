@@ -29,7 +29,6 @@ gameStartScene.leave((ctx) => {
   );
 });
 gameStartScene.hears(/A|B|C|D/g, (ctx) => {
-  console.log("Response: ", ctx.message.text);
   checkAnswer(ctx, ctx.message.text);
 });
 
@@ -157,6 +156,12 @@ const checkAnswer = (ctx, answer) => {
       answerIndex = 0;
       break;
   }
+
+  console.log(
+    "User's asnwer: ",
+    answer,
+    answersForCurrentQuestion[answerIndex].correct
+  );
 
   if (
     Boolean(answersForCurrentQuestion[answerIndex].correct) &&
