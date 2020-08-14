@@ -86,15 +86,17 @@ const giveScore = (uid, player_name, ctx) => {
   lockGiveScore = true;
   fetch(
     `http://azmiarzaq.000webhostapp.com/ccu_tbot/api/scores/?uid=${uid}&player_name=${player_name}`
-  ).then(() => {
-    lockGiveScore = false;
+  )
+    .then(() => {
+      lockGiveScore = false;
 
-    ctx.reply(`${player_name} got the point`);
+      ctx.reply(`${player_name} got the point`);
 
-    clearTimeout(nextQuestionTimeout);
+      clearTimeout(nextQuestionTimeout);
 
-    startGame(ctx);
-  });
+      startGame(ctx);
+    })
+    .catch((err) => console.log(err));
 };
 
 /**
