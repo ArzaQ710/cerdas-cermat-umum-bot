@@ -3,11 +3,11 @@ const fetch = require("node-fetch");
 
 const ccu_tbot = new Composer();
 
-const nextQuestionDelay = 10;
+const nextQuestionDelay = 5;
 let gamestart = false;
 let nocorrectanswer = 0;
 let answersForCurrentQuestion = {};
-let lockGiveScore = false;
+let giveScoreLocked = false;
 let nextQuestionTimeout = 0;
 
 /**
@@ -65,19 +65,14 @@ const sendQuestion = (ctx) => {
     getRandomQuestion()
       .then((question) => {
         ctx.replyWithMarkdown(
-          `${question.question.question}\nA: ${answersForCurrentQuestion[0].answer}\nB: ${answersForCurrentQuestion[1].answer}\nC: ${answersForCurrentQuestion[2].answer}\nD: ${answersForCurrentQuestion[3].answer}`,
+          `${question.question.question}\n\nA: ${answersForCurrentQuestion[0].answer}\nB: ${answersForCurrentQuestion[1].answer}\nC: ${answersForCurrentQuestion[2].answer}\nD: ${answersForCurrentQuestion[3].answer}`,
           Markup.keyboard([
-            ["A", "B"],
-            ["C", "D"],
+            ["A", "C"],
+            ["B", "D"],
           ])
-            .oneTime()
             .resize()
             .extra()
         );
-
-        // ctx.reply(question.question.question);
-        console.log(question.question.question);
-        nocorrectanswer++;
 
         resolve(true);
       })
@@ -94,14 +89,16 @@ const sendQuestion = (ctx) => {
  * @param TelegrafContext ctx
  */
 const giveScore = (uid, player_name, ctx) => {
-  lockGiveScore = true;
+  giveScoreLocked = true;
   fetch(
     `http://azmiarzaq.000webhostapp.com/ccu_tbot/api/scores/?uid=${uid}&player_name=${player_name}`
   )
     .then(() => {
-      lockGiveScore = false;
+      giveScoreLocked = false;
+      gamestart = true;
 
       ctx.reply(`${player_name} got the point`);
+      ctx.reply("Here we go again");
 
       clearTimeout(nextQuestionTimeout);
 
@@ -139,7 +136,7 @@ const checkAnswer = (ctx, answer) => {
     const uid = ctx.from.id;
     const player_name = `${ctx.from.first_name} ${ctx.from.last_name}`;
 
-    if (!lockGiveScore) {
+    if (!giveScoreLocked) {
       giveScore(uid, player_name, ctx);
     }
   }
@@ -159,37 +156,15 @@ const startGame = (ctx) => {
     sendQuestion(ctx)
       .then(() => {
         nextQuestionTimeout = setTimeout(() => {
+          nocorrectanswer++;
           startGame(ctx);
         }, 1000 * nextQuestionDelay);
       })
       .catch((err) => console.log(err));
   } else {
     nocorrectanswer = 0;
+    console.log("Game stopped");
   }
-
-  /**
-   * Get random question
-   *
-   * Set active question
-   *
-   * Send question
-   *
-   * Wait for answer for n second and repeat the whole proccess
-   *
-   * If someone answers correctly
-   *
-   * then
-   *
-   * Update scoreboard
-   *
-   * else
-   *
-   * Increase nocorrectanswer counter
-   *
-   * If nocorrectanswer counter == 5
-   *
-   * then stop game
-   */
 };
 
 ccu_tbot.command("start", (ctx) => {
@@ -205,22 +180,7 @@ ccu_tbot.command("startgame", (ctx) => {
 ccu_tbot.command("help", (ctx) => ctx.reply("What can i help?"));
 
 ccu_tbot.hears(/A|B|C|D/g, (ctx) => {
-  gamestart = true;
-  ctx.reply("Lets rock");
   checkAnswer(ctx, ctx.message.text);
-});
-
-ccu_tbot.action("answer-a", (ctx) => {
-  checkAnswer(0, ctx);
-});
-ccu_tbot.action("answer-b", (ctx) => {
-  checkAnswer(1, ctx);
-});
-ccu_tbot.action("answer-c", (ctx) => {
-  checkAnswer(2, ctx);
-});
-ccu_tbot.action("answer-d", (ctx) => {
-  checkAnswer(3, ctx);
 });
 
 module.exports = ccu_tbot;
