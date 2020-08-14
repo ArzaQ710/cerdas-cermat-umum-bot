@@ -91,7 +91,10 @@ const sendQuestion = (ctx) => {
 const giveScore = (uid, player_name, ctx) => {
   giveScoreLocked = true;
   fetch(
-    `http://azmiarzaq.000webhostapp.com/ccu_tbot/api/scores/?uid=${uid}&player_name=${player_name}`
+    `http://azmiarzaq.000webhostapp.com/ccu_tbot/api/scores/?uid=${uid}&player_name=${player_name}`,
+    {
+      method: "POST",
+    }
   )
     .then(() => {
       giveScoreLocked = false;
@@ -163,6 +166,9 @@ const startGame = (ctx) => {
       .catch((err) => console.log(err));
   } else {
     nocorrectanswer = 0;
+    ctx.reply(
+      "I think it's enough. Looks like one answers correctly for five times in a row"
+    );
     console.log("Game stopped");
   }
 };
