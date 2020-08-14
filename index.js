@@ -72,11 +72,11 @@ const sendQuestion = (ctx) => {
         // ctx.reply(question.question.question);
         console.log(question.question.question);
         nocorrectanswer++;
-      })
-      .catch((err) => console.log(err));
 
-    resolve(true);
-  }).catch(() => reject("Failed to send question"));
+        resolve(true);
+      })
+      .catch(reject);
+  });
 };
 
 /**
