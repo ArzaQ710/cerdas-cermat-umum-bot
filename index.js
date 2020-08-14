@@ -151,7 +151,7 @@ const startGame = (ctx) => {
       .then(() => {
         nextQuestionTimeout = setTimeout(() => {
           startGame(ctx);
-        }, 1000 * nextQuestionDelay);
+        }, 5000);
       })
       .catch((err) => console.log(err));
   } else {
