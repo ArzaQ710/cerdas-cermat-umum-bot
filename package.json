@@ -1,0 +1,23 @@
+{
+  "name": "ccu_tbot",
+  "version": "1.0.0",
+  "description": "Telegram bot seperti Family 100",
+  "main": "index.js",
+  "scripts": {
+    "start": "micro-bot",
+    "commit": "git commit -m 'test'",
+    "push": "git push heroku master",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": "10"
+  },
+  "author": "Muhammad Fauzan Azmi Arzaki",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^7.17.2",
+    "firebase-admin": "^9.0.0",
+    "micro-bot": "^2.5.3",
+    "node-fetch": "^2.6.0"
+  }
+}
