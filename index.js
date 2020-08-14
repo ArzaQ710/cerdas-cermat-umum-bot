@@ -100,8 +100,6 @@ const giveScore = (uid, player_name, ctx) => {
       ctx.reply(`${player_name} got the point`);
       ctx.reply("Here we go again");
 
-      clearTimeout(nextQuestionTimeout);
-
       startGame(ctx);
     })
     .catch((err) => console.log(err));
@@ -137,6 +135,7 @@ const checkAnswer = (ctx, answer) => {
     const player_name = `${ctx.from.first_name} ${ctx.from.last_name}`;
 
     if (!giveScoreLocked) {
+      clearTimeout(nextQuestionTimeout);
       giveScore(uid, player_name, ctx);
     }
   }
@@ -157,6 +156,7 @@ const startGame = (ctx) => {
       .then(() => {
         nextQuestionTimeout = setTimeout(() => {
           nocorrectanswer++;
+          ctx.reply("Here we go again");
           startGame(ctx);
         }, 1000 * nextQuestionDelay);
       })
